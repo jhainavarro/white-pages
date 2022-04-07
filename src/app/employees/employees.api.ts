@@ -1,0 +1,34 @@
+import { AddEmployeeInput, Employee } from "./employee.models";
+
+const EMPLOYEES_KEY = "employees";
+
+/**
+ * @returns The list of employee records stored
+ */
+export function getEmployees(): Employee[] {
+  const list = window.localStorage.getItem(EMPLOYEES_KEY);
+
+  // Assumes that the format of saved details is correct
+  return list ? (JSON.parse(list) as Employee[]) : [];
+}
+
+/**
+ * @param input Details of employee to be added
+ * @returns The new Employee object
+ */
+export function addEmployee(input: AddEmployeeInput): Employee {
+  const newEmployee = {
+    ...input,
+    id: `${Date.now()}`, // Can also get from a UUID generator
+  };
+  const list = getEmployees().concat(newEmployee);
+
+  try {
+    window.localStorage.setItem(EMPLOYEES_KEY, JSON.stringify(list));
+  } catch (e) {
+    console.error(e);
+    throw new Error("Unable to add employee record");
+  }
+
+  return newEmployee;
+}
