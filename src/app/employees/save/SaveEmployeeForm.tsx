@@ -1,14 +1,25 @@
 import React, { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { addEmployee } from "../employees.api";
+import { addEmployee, updateEmployee } from "../employees.api";
 import {
   getAvatar,
   getDefaultValues,
   Inputs,
 } from "./SaveEmployeeForm.helpers";
 import "./SaveEmployeeForm.css";
+import { Employee } from "../employee.models";
 
-export function SaveEmployeeForm() {
+interface SaveEmployeeFormProps {
+  employee?: Employee;
+  onSave: () => void;
+  onClose: () => void;
+}
+
+export function SaveEmployeeForm({
+  employee,
+  onSave,
+  onClose,
+}: SaveEmployeeFormProps) {
   const {
     register,
     handleSubmit,
@@ -17,18 +28,22 @@ export function SaveEmployeeForm() {
     reset,
     formState: { errors },
   } = useForm<Inputs>({
-    defaultValues: getDefaultValues(),
+    defaultValues: getDefaultValues(employee),
   });
 
   const [result, setResult] = useState("");
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     try {
-      addEmployee(data);
+      if (employee) {
+        updateEmployee({ ...data, id: employee.id });
+      } else {
+        addEmployee(data);
+      }
+
       setResult("Successfully saved employee details!");
 
-      reset();
-      setValue("avatarUrl", getAvatar());
+      onSave();
     } catch {
       setResult("Unable to save details. Please try again.");
     }
@@ -58,6 +73,8 @@ export function SaveEmployeeForm() {
           id="name"
           {...register("name", { required: true })}
           placeholder="Jane Santos"
+          autoComplete="off"
+          autoFocus
         />
         {errors.name && <span>Please enter the employee's full name</span>}
       </div>
@@ -88,6 +105,9 @@ export function SaveEmployeeForm() {
       <div>
         <button type="submit">Save</button>
         <button type="button" onClick={() => reset()}>
+          Reset
+        </button>
+        <button type="button" onClick={() => onClose()}>
           Cancel
         </button>
 

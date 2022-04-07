@@ -1,11 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import { useEmployees } from "./Employees.helpers";
 import { SaveEmployeeForm } from "./save/SaveEmployeeForm";
 import "./Employees.css";
+import { Employee } from "./employee.models";
 
 export function Employees() {
-  // TODO: Update list when a new record is added / updated
   const employees = useEmployees();
+
+  const [showSaveForm, setShowSaveForm] = useState(false);
+  const [employeeToUpdate, setEmployeeToUpdate] = useState<Employee>();
 
   return (
     <>
@@ -21,6 +24,16 @@ export function Employees() {
               <p>{e.name}</p>
               <p>Hired on {e.hireDate}</p>
               {e.isFeatured && <p>(featured)</p>}
+
+              <button
+                type="button"
+                onClick={() => {
+                  setShowSaveForm(true);
+                  setEmployeeToUpdate(e);
+                }}
+              >
+                Edit
+              </button>
             </li>
           ))}
         </ul>
@@ -28,9 +41,25 @@ export function Employees() {
         <p>No employee records yet</p>
       )}
 
+      <button
+        type="button"
+        onClick={() => {
+          setShowSaveForm(true);
+          setEmployeeToUpdate(undefined);
+        }}
+      >
+        Add
+      </button>
+
       <hr />
 
-      <SaveEmployeeForm />
+      {showSaveForm && (
+        <SaveEmployeeForm
+          employee={employeeToUpdate}
+          onSave={() => setShowSaveForm(false)}
+          onClose={() => setShowSaveForm(false)}
+        />
+      )}
     </>
   );
 }

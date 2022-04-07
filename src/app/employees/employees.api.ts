@@ -1,4 +1,8 @@
-import { AddEmployeeInput, Employee } from "./employee.models";
+import {
+  AddEmployeeInput,
+  EditEmployeeInput,
+  Employee,
+} from "./employee.models";
 
 const EMPLOYEES_KEY = "employees";
 
@@ -31,4 +35,24 @@ export function addEmployee(input: AddEmployeeInput): Employee {
   }
 
   return newEmployee;
+}
+
+/**
+ * @param input Updated details of the employee
+ * @returns The updated Employee object
+ */
+export function updateEmployee(input: EditEmployeeInput): Employee {
+  const list = getEmployees();
+  const employeeIndex = list.findIndex((e) => e.id === input.id);
+
+  list.splice(employeeIndex, 1, input);
+
+  try {
+    window.localStorage.setItem(EMPLOYEES_KEY, JSON.stringify(list));
+  } catch (e) {
+    console.error(e);
+    throw new Error("Unable to edit employee record");
+  }
+
+  return input;
 }

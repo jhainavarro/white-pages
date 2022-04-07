@@ -1,3 +1,5 @@
+import { Employee } from "../employee.models";
+
 /**
  * Shape of the form data
  */
@@ -11,12 +13,12 @@ export type Inputs = {
 /**
  * @returns The default values for the form
  */
-export function getDefaultValues(): Inputs {
+export function getDefaultValues(employee?: Employee): Inputs {
   return {
-    name: "",
-    avatarUrl: getAvatar(),
-    isFeatured: false,
-    hireDate: "",
+    name: employee?.name ?? "",
+    avatarUrl: employee?.avatarUrl ?? getAvatar(),
+    isFeatured: employee?.isFeatured ?? false,
+    hireDate: employee?.hireDate ?? "",
   };
 }
 
