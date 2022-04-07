@@ -56,3 +56,20 @@ export function updateEmployee(input: EditEmployeeInput): Employee {
 
   return input;
 }
+
+/**
+ * @param id of employee to delete
+ */
+export function deleteEmployee(id: Employee["id"]): void {
+  const list = getEmployees();
+  const employeeIndex = list.findIndex((e) => e.id === id);
+
+  list.splice(employeeIndex, 1);
+
+  try {
+    window.localStorage.setItem(EMPLOYEES_KEY, JSON.stringify(list));
+  } catch (e) {
+    console.error(e);
+    throw new Error("Unable to delete employee record");
+  }
+}

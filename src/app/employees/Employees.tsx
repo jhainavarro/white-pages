@@ -3,12 +3,15 @@ import { useEmployees } from "./Employees.helpers";
 import { SaveEmployeeForm } from "./save/SaveEmployeeForm";
 import "./Employees.css";
 import { Employee } from "./employee.models";
+import { deleteEmployee } from "./employees.api";
 
 export function Employees() {
   const employees = useEmployees();
 
   const [showSaveForm, setShowSaveForm] = useState(false);
   const [employeeToUpdate, setEmployeeToUpdate] = useState<Employee>();
+
+  const [employeeToDelete, setEmployeeToDelete] = useState<Employee["id"]>();
 
   return (
     <>
@@ -34,6 +37,31 @@ export function Employees() {
               >
                 Edit
               </button>
+
+              {employeeToDelete === e.id ? (
+                <div>
+                  Are you sure you want to delete this record?
+                  <button
+                    type="button"
+                    onClick={() => {
+                      deleteEmployee(e.id);
+                      setEmployeeToDelete(undefined);
+                    }}
+                  >
+                    Yes, delete it
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setEmployeeToDelete(undefined)}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              ) : (
+                <button type="button" onClick={() => setEmployeeToDelete(e.id)}>
+                  Delete
+                </button>
+              )}
             </li>
           ))}
         </ul>
