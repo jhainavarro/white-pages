@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { addEmployee, updateEmployee } from "../employees.api";
 import {
   getAvatar,
   getDefaultValues,
@@ -8,6 +7,7 @@ import {
 } from "./SaveEmployeeForm.helpers";
 import "./SaveEmployeeForm.css";
 import { Employee } from "../employee.models";
+import { useSaveEmployee } from "../employees.api";
 
 interface SaveEmployeeFormProps {
   employee?: Employee;
@@ -30,23 +30,22 @@ export function SaveEmployeeForm({
   } = useForm<Inputs>({
     defaultValues: getDefaultValues(employee),
   });
+  const { mutate: saveEmployee } = useSaveEmployee();
 
   const [result, setResult] = useState("");
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
-    try {
-      if (employee) {
-        updateEmployee({ ...data, id: employee.id });
-      } else {
-        addEmployee(data);
-      }
+    const employeeToSave = employee ? { ...data, id: employee.id } : data;
 
-      setResult("Successfully saved employee details!");
-
-      onSave();
-    } catch {
-      setResult("Unable to save details. Please try again.");
-    }
+    saveEmployee(employeeToSave, {
+      onSuccess() {
+        setResult("Successfully saved employee details!");
+        onSave();
+      },
+      onError() {
+        setResult("Unable to save details. Please try again.");
+      },
+    });
   };
 
   return (

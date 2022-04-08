@@ -25,6 +25,6 @@ export function getDefaultValues(employee?: Employee): Inputs {
 /**
  * @returns A URL to a random avatar for the employee
  */
-export function getAvatar(): string {
+export function getAvatar() {
   return `https://avatars.dicebear.com/api/avataaars/${Date.now()}.svg`;
 }

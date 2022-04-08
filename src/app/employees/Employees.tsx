@@ -3,11 +3,12 @@ import { useEmployees } from "./Employees.helpers";
 import { SaveEmployeeForm } from "./save/SaveEmployeeForm";
 import "./Employees.css";
 import { Employee } from "./employee.models";
-import { deleteEmployee } from "./employees.api";
+import { useDeleteEmployee } from "./employees.api";
 import { EmployeesList } from "./view/EmployeesList";
 
 export function Employees() {
   const employees = useEmployees();
+  const { mutate: deleteEmployee } = useDeleteEmployee();
   const [showSaveForm, setShowSaveForm] = useState(false);
   const [employeeToEdit, setEmployeeToEdit] = useState<Employee>();
 
@@ -15,12 +16,11 @@ export function Employees() {
     <>
       <EmployeesList
         employees={employees}
+        onDeleteConfirm={(e) => deleteEmployee(e.id)}
         onEditClick={(e) => {
           setShowSaveForm(true);
           setEmployeeToEdit(e);
         }}
-        // TODO: Auto-update UI after delete
-        onDeleteConfirm={(e) => deleteEmployee(e.id)}
       />
 
       <button
