@@ -1,12 +1,17 @@
 import { useMutation, useQuery, useQueryClient } from "react-query";
+import { getJobs, Job, updateJob } from "app/jobs";
 import {
   AddEmployeeInput,
   EditEmployeeInput,
   Employee,
 } from "./employee.models";
+import { getRemovedItems } from "shared/utils";
 
 const EMPLOYEES_KEY = "employees";
 
+/**
+ * @returns The list of employee records stored
+ */
 function getEmployees() {
   const list = window.localStorage.getItem(EMPLOYEES_KEY);
 
@@ -18,15 +23,59 @@ export function useGetEmployees() {
   return useQuery(EMPLOYEES_KEY, () => getEmployees());
 }
 
-function addEmployee(input: AddEmployeeInput) {
-  return new Promise<Employee>((resolve, reject) => {
+/**
+ * Adds or removes the employee from the given jobs
+ *
+ * @param action
+ * @param employeeId
+ * @param jobIds
+ */
+function updateJobEmployees(
+  action: "add" | "remove",
+  employeeId: Employee["id"],
+  jobIds: Job["id"][]
+) {
+  const jobs = getJobs();
+
+  // Used `.reduce()` for a more straightforward mapping of the promises
+  // as opposed to doing `.map()` + `.filter()` with a type guard to remove
+  // the `undefined` values, which might happen if the job ID does not exist
+  const updates = jobIds.reduce((list, jobId) => {
+    const job = jobs.find((j) => j.id === jobId);
+    return job
+      ? list.concat(
+          updateJob({
+            ...job,
+            employeeIds:
+              action === "add"
+                ? job.employeeIds.concat(employeeId)
+                : job.employeeIds.filter((eId) => eId !== employeeId),
+          })
+        )
+      : list;
+  }, [] as Promise<Job>[]);
+
+  return Promise.all(updates);
+}
+
+/**
+ * Adds a new employee record
+ *
+ * @param input
+ */
+async function addEmployee(input: AddEmployeeInput) {
+  return new Promise<Employee>(async (resolve, reject) => {
+    const newEmployeeId = `${Date.now()}`; // Can also get from a UUID generator
     const newEmployee: Employee = {
       ...input,
-      id: `${Date.now()}`, // Can also get from a UUID generator
+      id: newEmployeeId,
     };
-    const list = getEmployees().concat(newEmployee);
 
     try {
+      const list = getEmployees().concat(newEmployee);
+
+      await updateJobEmployees("add", newEmployeeId, input.jobIds);
+
       window.localStorage.setItem(EMPLOYEES_KEY, JSON.stringify(list));
       resolve(newEmployee);
     } catch (e) {
@@ -36,14 +85,32 @@ function addEmployee(input: AddEmployeeInput) {
   });
 }
 
+/**
+ * Updates an existing employee record
+ * Throws an error if the employee does not exist
+ *
+ * @param input
+ */
 function updateEmployee(input: EditEmployeeInput) {
-  return new Promise<Employee>((resolve, reject) => {
+  return new Promise<Employee>(async (resolve, reject) => {
     const list = getEmployees();
     const employeeIndex = list.findIndex((e) => e.id === input.id);
 
-    list.splice(employeeIndex, 1, input);
+    if (employeeIndex === -1) {
+      reject(new Error(`Employee with id=${input.id} does not exist`));
+    }
+
+    const storedJobs = list[employeeIndex].jobIds;
+    const updatedJobs = input.jobIds;
+    const addedJobs = getRemovedItems(updatedJobs, storedJobs);
+    const removedJobs = getRemovedItems(storedJobs, updatedJobs);
 
     try {
+      list.splice(employeeIndex, 1, input);
+
+      await updateJobEmployees("add", input.id, addedJobs);
+      await updateJobEmployees("remove", input.id, removedJobs);
+
       window.localStorage.setItem(EMPLOYEES_KEY, JSON.stringify(list));
       resolve(input);
     } catch (e) {
@@ -67,14 +134,28 @@ export function useSaveEmployee() {
   );
 }
 
+/**
+ * Deletes an employee record
+ * Throws an error if the employee does not exist
+ *
+ * @param id
+ */
 function deleteEmployee(id: Employee["id"]) {
-  return new Promise<void>((resolve, reject) => {
+  return new Promise<void>(async (resolve, reject) => {
     const list = getEmployees();
     const employeeIndex = list.findIndex((e) => e.id === id);
 
-    list.splice(employeeIndex, 1);
+    if (employeeIndex === -1) {
+      reject(new Error(`Employee with id=${id} does not exist`));
+    }
+
+    const employee = list[employeeIndex];
 
     try {
+      list.splice(employeeIndex, 1);
+
+      await updateJobEmployees("remove", employee.id, employee.jobIds);
+
       window.localStorage.setItem(EMPLOYEES_KEY, JSON.stringify(list));
       resolve();
     } catch (e) {

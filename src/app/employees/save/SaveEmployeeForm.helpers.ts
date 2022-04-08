@@ -1,3 +1,4 @@
+import { Job } from "app/jobs";
 import { Employee } from "../employee.models";
 
 /**
@@ -8,6 +9,7 @@ export type Inputs = {
   avatarUrl: string;
   isFeatured: boolean;
   hireDate: string;
+  jobIds: Job["id"][];
 };
 
 /**
@@ -19,6 +21,7 @@ export function getDefaultValues(employee?: Employee): Inputs {
     avatarUrl: employee?.avatarUrl ?? getAvatar(),
     isFeatured: employee?.isFeatured ?? false,
     hireDate: employee?.hireDate ?? "",
+    jobIds: employee?.jobIds ?? [],
   };
 }
 

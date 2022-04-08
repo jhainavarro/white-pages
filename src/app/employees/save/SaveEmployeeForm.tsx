@@ -8,6 +8,7 @@ import {
 import "./SaveEmployeeForm.css";
 import { Employee } from "../employee.models";
 import { useSaveEmployee } from "../employees.api";
+import { useGetJobs } from "app/jobs/jobs.api";
 
 interface SaveEmployeeFormProps {
   employee?: Employee;
@@ -31,6 +32,7 @@ export function SaveEmployeeForm({
     defaultValues: getDefaultValues(employee),
   });
   const { mutate: saveEmployee } = useSaveEmployee();
+  const { data: jobs = [] } = useGetJobs();
 
   const [result, setResult] = useState("");
 
@@ -90,6 +92,18 @@ export function SaveEmployeeForm({
         {errors.hireDate && (
           <span>Please select the date when the employee was hired</span>
         )}
+      </div>
+
+      {/* JOBS */}
+      <div>
+        <label htmlFor="jobs">Jobs:</label>
+        <select id="jobs" {...register("jobIds")} multiple>
+          {jobs.map((j) => (
+            <option key={j.id} value={j.id}>
+              {j.name}
+            </option>
+          ))}
+        </select>
       </div>
 
       {/* IS FEATURED? */}

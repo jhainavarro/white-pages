@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { Column } from "react-table";
+import { useJobsMap } from "app/jobs";
 import { Table } from "shared/components/table";
 import { Employee } from "../employee.models";
 
@@ -14,6 +15,8 @@ export function EmployeesList({
   onEditClick,
   onDeleteConfirm,
 }: EmployeesListProps) {
+  const jobsMap = useJobsMap();
+
   const data: Employee[] = useMemo(() => employees, [employees]);
 
   const columns: Column<Employee>[] = useMemo(
@@ -34,6 +37,18 @@ export function EmployeesList({
       {
         Header: "Date hired",
         accessor: "hireDate",
+      },
+      {
+        Header: "Jobs",
+        accessor: "id",
+        id: "jobs",
+        Cell: ({ cell }) => (
+          <ul>
+            {cell.row.original.jobIds.map((jobId) => (
+              <li key={jobId}>{jobsMap.get(jobId)?.name}</li>
+            ))}
+          </ul>
+        ),
       },
       {
         Header: "Featured",
@@ -81,7 +96,7 @@ export function EmployeesList({
         },
       },
     ],
-    [onDeleteConfirm, onEditClick]
+    [jobsMap, onDeleteConfirm, onEditClick]
   );
 
   return <Table columns={columns} data={data} />;

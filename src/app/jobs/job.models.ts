@@ -3,9 +3,9 @@ import { Employee } from "app/employees";
 export interface Job {
   id: string;
   name: string;
-  employees: Employee[];
+  employeeIds: Employee["id"][];
 }
 
-export type AddJobInput = Omit<Job, "id" | "employees">;
+export type AddJobInput = Omit<Job, "id" | "employeeIds">;
 
 export type EditJobInput = Job;

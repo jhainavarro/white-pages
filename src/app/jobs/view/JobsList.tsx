@@ -24,7 +24,7 @@ export function JobsList({
       },
       {
         Header: "# of Employees",
-        accessor: (row) => row.employees.length,
+        accessor: (row) => row.employeeIds.length,
         id: "employeesCount",
       },
       {
@@ -45,7 +45,7 @@ export function JobsList({
           const [showConfirm, setShowConfirm] = useState(false);
 
           // Can only delete jobs without any assigned employees
-          if (cell.row.original.employees.length > 0) {
+          if (cell.row.original.employeeIds.length > 0) {
             return <>&nbsp;</>;
           }
 
