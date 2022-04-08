@@ -20,7 +20,7 @@ export function useGetEmployees() {
 
 function addEmployee(input: AddEmployeeInput) {
   return new Promise<Employee>((resolve, reject) => {
-    const newEmployee = {
+    const newEmployee: Employee = {
       ...input,
       id: `${Date.now()}`, // Can also get from a UUID generator
     };
