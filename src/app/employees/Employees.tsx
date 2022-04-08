@@ -4,76 +4,30 @@ import { SaveEmployeeForm } from "./save/SaveEmployeeForm";
 import "./Employees.css";
 import { Employee } from "./employee.models";
 import { deleteEmployee } from "./employees.api";
+import { EmployeesList } from "./view/EmployeesList";
 
 export function Employees() {
   const employees = useEmployees();
-
   const [showSaveForm, setShowSaveForm] = useState(false);
-  const [employeeToUpdate, setEmployeeToUpdate] = useState<Employee>();
-
-  const [employeeToDelete, setEmployeeToDelete] = useState<Employee["id"]>();
+  const [employeeToEdit, setEmployeeToEdit] = useState<Employee>();
 
   return (
     <>
-      {employees.length > 0 ? (
-        <ul>
-          {employees.map((e) => (
-            <li key={e.id}>
-              <img
-                src={e.avatarUrl}
-                alt={`Avatar of ${e.name}`}
-                className="Employee-avatar"
-              />
-              <p>{e.name}</p>
-              <p>Hired on {e.hireDate}</p>
-              {e.isFeatured && <p>(featured)</p>}
-
-              <button
-                type="button"
-                onClick={() => {
-                  setShowSaveForm(true);
-                  setEmployeeToUpdate(e);
-                }}
-              >
-                Edit
-              </button>
-
-              {employeeToDelete === e.id ? (
-                <div>
-                  Are you sure you want to delete this record?
-                  <button
-                    type="button"
-                    onClick={() => {
-                      deleteEmployee(e.id);
-                      setEmployeeToDelete(undefined);
-                    }}
-                  >
-                    Yes, delete it
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setEmployeeToDelete(undefined)}
-                  >
-                    Cancel
-                  </button>
-                </div>
-              ) : (
-                <button type="button" onClick={() => setEmployeeToDelete(e.id)}>
-                  Delete
-                </button>
-              )}
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>No employee records yet</p>
-      )}
+      <EmployeesList
+        employees={employees}
+        onEditClick={(e) => {
+          setShowSaveForm(true);
+          setEmployeeToEdit(e);
+        }}
+        // TODO: Auto-update UI after delete
+        onDeleteConfirm={(e) => deleteEmployee(e.id)}
+      />
 
       <button
         type="button"
         onClick={() => {
           setShowSaveForm(true);
-          setEmployeeToUpdate(undefined);
+          setEmployeeToEdit(undefined);
         }}
       >
         Add
@@ -83,7 +37,7 @@ export function Employees() {
 
       {showSaveForm && (
         <SaveEmployeeForm
-          employee={employeeToUpdate}
+          employee={employeeToEdit}
           onSave={() => setShowSaveForm(false)}
           onClose={() => setShowSaveForm(false)}
         />
