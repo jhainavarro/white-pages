@@ -1,13 +1,20 @@
 import React from "react";
-import { Column, useTable } from "react-table";
+import { Column, Row, useTable } from "react-table";
 import "./Table.css";
 
 interface TableProps<D extends object> {
   columns: Column<D>[];
   data: D[];
+
+  // For customizing the table props. Add more as needed (eg, for columns, headers, etc)
+  getRowProps?: (row: Row<D>) => object;
 }
 
-export function Table<D extends object>({ columns, data }: TableProps<D>) {
+export function Table<D extends object>({
+  columns,
+  data,
+  getRowProps,
+}: TableProps<D>) {
   const tableInstance = useTable({ columns, data });
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     tableInstance;
@@ -31,7 +38,7 @@ export function Table<D extends object>({ columns, data }: TableProps<D>) {
           prepareRow(row);
 
           return (
-            <tr {...row.getRowProps()}>
+            <tr {...row.getRowProps()} {...getRowProps?.(row)}>
               {row.cells.map((cell) => {
                 return (
                   <td {...cell.getCellProps()} className="Table-cell">
