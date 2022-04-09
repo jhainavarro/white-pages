@@ -3,6 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@fontsource/arvo": "^4.5.4",
+    "@fontsource/mulish": "^4.5.7",
+    "@mantine/core": "^4.1.2",
+    "@mantine/hooks": "^4.1.2",
     "@splidejs/react-splide": "^0.7.3",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^12.1.4",
