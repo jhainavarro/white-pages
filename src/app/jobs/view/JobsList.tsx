@@ -1,7 +1,9 @@
 import React, { useMemo, useState } from "react";
 import { Column } from "react-table";
+import { Button } from "shared/components/button";
 import { Table } from "shared/components/table";
 import { Job } from "../job.models";
+import { useStyles } from "./JobsList.styles";
 
 interface JobsListProps {
   jobs: Job[];
@@ -14,8 +16,8 @@ export function JobsList({
   onEditClick,
   onDeleteConfirm,
 }: JobsListProps) {
+  const { classes } = useStyles();
   const data: Job[] = useMemo(() => jobs, [jobs]);
-
   const columns: Column<Job>[] = useMemo(
     () => [
       {
@@ -30,17 +32,7 @@ export function JobsList({
       {
         Header: " ",
         accessor: "id",
-        id: "edit",
-        Cell: ({ cell }) => (
-          <button type="button" onClick={() => onEditClick(cell.row.original)}>
-            Edit
-          </button>
-        ),
-      },
-      {
-        Header: " ",
-        accessor: "id",
-        id: "delete",
+        id: "actions",
         Cell: ({ cell }) => {
           const [showConfirm, setShowConfirm] = useState(false);
 
@@ -49,36 +41,57 @@ export function JobsList({
             return <>&nbsp;</>;
           }
 
-          return showConfirm ? (
-            <div>
-              Are you sure you want to delete this record?
-              <button
-                type="button"
-                onClick={() => {
-                  setShowConfirm(false);
-                  onDeleteConfirm(cell.row.original);
-                }}
+          return (
+            <div className={classes.actions}>
+              <Button
+                variant="subtle"
+                onClick={() => onEditClick(cell.row.original)}
               >
-                Yes, delete it
-              </button>
-              <button type="button" onClick={() => setShowConfirm(false)}>
-                Cancel
-              </button>
+                Edit
+              </Button>
+
+              {showConfirm ? (
+                <div>
+                  Are you sure you want to delete this record?
+                  <Button
+                    onClick={() => {
+                      setShowConfirm(false);
+                      onDeleteConfirm(cell.row.original);
+                    }}
+                  >
+                    Yes, delete it
+                  </Button>
+                  <Button onClick={() => setShowConfirm(false)}>Cancel</Button>
+                </div>
+              ) : (
+                <Button
+                  color="red"
+                  variant="subtle"
+                  onClick={(event: React.MouseEvent) => {
+                    setShowConfirm(true);
+                    // Triggers the click handler as if the row is clicked
+                    event.stopPropagation();
+                  }}
+                >
+                  Delete
+                </Button>
+              )}
             </div>
-          ) : (
-            <button type="button" onClick={() => setShowConfirm(true)}>
-              Delete
-            </button>
           );
         },
       },
     ],
-    [onDeleteConfirm, onEditClick]
+    [onDeleteConfirm, onEditClick, classes]
   );
 
   return jobs.length > 0 ? (
-    <Table columns={columns} data={data} />
+    <Table
+      columns={columns}
+      data={data}
+      getRowProps={() => ({ className: classes.row })}
+      onRowClick={(j) => onEditClick(j)}
+    />
   ) : (
-    <p>No jobs yet</p>
+    <p className={classes.emptyText}>No jobs yet</p>
   );
 }
