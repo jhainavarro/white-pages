@@ -50,14 +50,8 @@ export function Employees() {
       <SaveEmployeeForm
         employee={employeeToEdit}
         open={showSaveForm}
-        onSave={() => {
-          setShowSaveForm(false);
-          setEmployeeToEdit(undefined);
-        }}
-        onClose={() => {
-          setShowSaveForm(false);
-          setEmployeeToEdit(undefined);
-        }}
+        onSave={() => setShowSaveForm(false)}
+        onClose={() => setShowSaveForm(false)}
       />
 
       <ConfirmDeleteEmployee
