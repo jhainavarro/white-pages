@@ -11,14 +11,6 @@ export type MultiSelectProps = MMultiSelectProps;
 
 export const MultiSelect = React.forwardRef<HTMLInputElement, MultiSelectProps>(
   (props, ref) => {
-    return (
-      <MMultiSelect
-        limit={5}
-        ref={ref}
-        searchable
-        clearSearchOnBlur
-        {...props}
-      />
-    );
+    return <MMultiSelect ref={ref} searchable clearSearchOnBlur {...props} />;
   }
 );
