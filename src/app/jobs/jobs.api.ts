@@ -73,7 +73,7 @@ export function useSaveJob() {
 
   return useMutation<Job, Error, Job | AddJobInput>(
     (input: AddJobInput | EditJobInput) =>
-      "id" in input ? updateJob(input) : addJob(input),
+      "id" in input && input.id ? updateJob(input) : addJob(input),
     {
       onSuccess() {
         queryClient.invalidateQueries(JOBS_KEY);
