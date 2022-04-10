@@ -25,6 +25,11 @@ export const useStyles = createStyles((theme) => ({
     width: 20,
     fill: theme.colors.orange[5],
   },
+  actions: {
+    display: "flex",
+    justifyContent: "flex-end",
+    gap: theme.spacing.md,
+  },
   emptyText: {
     textAlign: "center",
     fontStyle: "italic",

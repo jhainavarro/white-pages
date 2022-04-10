@@ -25,6 +25,12 @@ export function EmployeesList({
   const columns: Column<Employee>[] = useMemo(
     () => [
       {
+        Header: "Featured",
+        accessor: "isFeatured",
+        Cell: ({ value }) =>
+          value ? <CheckIcon className={classes.isFeaturedIcon} /> : <></>,
+      },
+      {
         Header: "Name",
         accessor: "name",
         Cell: ({ cell }) => {
@@ -63,58 +69,50 @@ export function EmployeesList({
         ),
       },
       {
-        Header: "Featured",
-        accessor: "isFeatured",
-        Cell: ({ value }) =>
-          value ? <CheckIcon className={classes.isFeaturedIcon} /> : <></>,
-      },
-      {
         Header: " ",
         accessor: "id",
-        id: "edit",
-        Cell: ({ cell }) => (
-          <Button
-            variant="subtle"
-            onClick={() => onEditClick(cell.row.original)}
-          >
-            Edit
-          </Button>
-        ),
-      },
-      {
-        Header: " ",
-        accessor: "id",
-        id: "delete",
+        id: "actions",
         Cell: ({ cell }) => {
           const [showConfirm, setShowConfirm] = useState(false);
 
-          return showConfirm ? (
-            <Modal
-              opened={showConfirm}
-              onClose={() => setShowConfirm(false)}
-              withCloseButton={false}
-              primaryButton={{
-                label: "Yes, delete",
-                color: "red",
-                onClick: () => onDeleteConfirm(cell.row.original),
-              }}
-            >
-              <p>
-                Are you sure you want to delete the record for
-                <span>{cell.row.original.name}</span>?
-              </p>
-            </Modal>
-          ) : (
-            <Button
-              color="red"
-              variant="subtle"
-              onClick={(event: React.MouseEvent) => {
-                setShowConfirm(true);
-                event.stopPropagation();
-              }}
-            >
-              Delete
-            </Button>
+          return (
+            <div className={classes.actions}>
+              <Button
+                variant="subtle"
+                onClick={() => onEditClick(cell.row.original)}
+              >
+                Edit
+              </Button>
+
+              {showConfirm ? (
+                <Modal
+                  opened={showConfirm}
+                  onClose={() => setShowConfirm(false)}
+                  withCloseButton={false}
+                  primaryButton={{
+                    label: "Yes, delete",
+                    color: "red",
+                    onClick: () => onDeleteConfirm(cell.row.original),
+                  }}
+                >
+                  <p>
+                    Are you sure you want to delete the record for
+                    <span>{cell.row.original.name}</span>?
+                  </p>
+                </Modal>
+              ) : (
+                <Button
+                  color="red"
+                  variant="subtle"
+                  onClick={(event: React.MouseEvent) => {
+                    setShowConfirm(true);
+                    event.stopPropagation();
+                  }}
+                >
+                  Delete
+                </Button>
+              )}
+            </div>
           );
         },
       },
