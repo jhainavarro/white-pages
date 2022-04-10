@@ -48,8 +48,8 @@ export function EmployeesList({
       },
       {
         Header: "Date Hired",
-        accessor: "hireDate",
-        Cell: ({ cell }) => cell.row.original.hireDate.toLocaleDateString(),
+        accessor: (row) => row.hireDate.toLocaleDateString(),
+        id: "hireDate",
       },
       {
         Header: "Jobs",
