@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { Column } from "react-table";
 import { Button } from "shared/components/button";
 import { Table } from "shared/components/table";
@@ -8,14 +8,10 @@ import { useStyles } from "./JobsList.styles";
 interface JobsListProps {
   jobs: Job[];
   onEditClick: (j: Job) => void;
-  onDeleteConfirm: (j: Job) => void;
+  onDeleteClick: (j: Job) => void;
 }
 
-export function JobsList({
-  jobs,
-  onEditClick,
-  onDeleteConfirm,
-}: JobsListProps) {
+export function JobsList({ jobs, onEditClick, onDeleteClick }: JobsListProps) {
   const { classes } = useStyles();
   const data: Job[] = useMemo(() => jobs, [jobs]);
   const columns: Column<Job>[] = useMemo(
@@ -34,54 +30,36 @@ export function JobsList({
         accessor: "id",
         id: "actions",
         Cell: ({ cell }) => {
-          const [showConfirm, setShowConfirm] = useState(false);
+          const j = cell.row.original;
 
           // Can only delete jobs without any assigned employees
-          if (cell.row.original.employeeIds.length > 0) {
-            return <>&nbsp;</>;
+          if (j.employeeIds.length > 0) {
+            return <></>;
           }
 
           return (
             <div className={classes.actions}>
-              <Button
-                variant="subtle"
-                onClick={() => onEditClick(cell.row.original)}
-              >
+              <Button variant="subtle" onClick={() => onEditClick(j)}>
                 Edit
               </Button>
 
-              {showConfirm ? (
-                <div>
-                  Are you sure you want to delete this record?
-                  <Button
-                    onClick={() => {
-                      setShowConfirm(false);
-                      onDeleteConfirm(cell.row.original);
-                    }}
-                  >
-                    Yes, delete it
-                  </Button>
-                  <Button onClick={() => setShowConfirm(false)}>Cancel</Button>
-                </div>
-              ) : (
-                <Button
-                  color="red"
-                  variant="subtle"
-                  onClick={(event: React.MouseEvent) => {
-                    setShowConfirm(true);
-                    // Triggers the click handler as if the row is clicked
-                    event.stopPropagation();
-                  }}
-                >
-                  Delete
-                </Button>
-              )}
+              <Button
+                color="red"
+                variant="subtle"
+                onClick={(event: React.MouseEvent) => {
+                  onDeleteClick(j);
+                  // Triggers the click handler as if the row is clicked
+                  event.stopPropagation();
+                }}
+              >
+                Delete
+              </Button>
             </div>
           );
         },
       },
     ],
-    [onDeleteConfirm, onEditClick, classes]
+    [onDeleteClick, onEditClick, classes]
   );
 
   return jobs.length > 0 ? (

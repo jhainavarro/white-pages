@@ -2,18 +2,20 @@ import React, { useState } from "react";
 import { Button } from "shared/components/button";
 import { Header } from "shared/components/header";
 import { ReactComponent as AddIcon } from "shared/icons/plus.svg";
+import { ConfirmDeleteJob } from "./delete/ConfirmDeleteJob";
 import { Job } from "./job.models";
-import { useDeleteJob, useGetJobs } from "./jobs.api";
+import { useGetJobs } from "./jobs.api";
 import { useStyles } from "./Jobs.styles";
 import { SaveJobForm } from "./save/SaveJobForm";
 import { JobsList } from "./view/JobsList";
 
 export function Jobs() {
   const { data: jobs = [] } = useGetJobs();
-  const { mutate: deleteJob } = useDeleteJob();
   const { classes } = useStyles();
   const [showSaveForm, setShowSaveForm] = useState(false);
   const [jobToEdit, setJobToEdit] = useState<Job>();
+  const [showConfirmDelete, setShowConfirmDelete] = useState(false);
+  const [jobToDelete, setJobToDelete] = useState<Job>();
 
   return (
     <>
@@ -35,10 +37,13 @@ export function Jobs() {
 
       <JobsList
         jobs={jobs}
-        onDeleteConfirm={(j) => deleteJob(j.id)}
         onEditClick={(j) => {
           setShowSaveForm(true);
           setJobToEdit(j);
+        }}
+        onDeleteClick={(j) => {
+          setShowConfirmDelete(true);
+          setJobToDelete(j);
         }}
       />
 
@@ -47,6 +52,19 @@ export function Jobs() {
         open={showSaveForm}
         onSave={() => setShowSaveForm(false)}
         onClose={() => setShowSaveForm(false)}
+      />
+
+      <ConfirmDeleteJob
+        job={jobToDelete}
+        open={showConfirmDelete}
+        onDelete={() => {
+          setShowConfirmDelete(false);
+          setJobToDelete(undefined);
+        }}
+        onClose={() => {
+          setShowConfirmDelete(false);
+          setJobToDelete(undefined);
+        }}
       />
     </>
   );
