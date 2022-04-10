@@ -22,7 +22,6 @@ export function Employees() {
       <div className={classes.header}>
         <Header className={classes.tableHeader}>Employees</Header>
         <Button
-          className={classes.addButton}
           leftIcon={<AddIcon className={classes.addIcon} />}
           size="lg"
           variant="gradient"
