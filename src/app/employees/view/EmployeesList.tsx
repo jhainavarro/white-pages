@@ -1,23 +1,22 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { Column } from "react-table";
 import { JobBadge, useJobsMap } from "app/jobs";
 import { Button } from "shared/components/button";
 import { Table } from "shared/components/table";
 import { Employee } from "../employee.models";
 import { useStyles } from "./EmployeeList.styles";
-import { Modal } from "shared/components/modal";
 import { ReactComponent as CheckIcon } from "shared/icons/check.svg";
 
 interface EmployeesListProps {
   employees: Employee[];
   onEditClick: (e: Employee) => void;
-  onDeleteConfirm: (e: Employee) => void;
+  onDeleteClick: (e: Employee) => void;
 }
 
 export function EmployeesList({
   employees,
   onEditClick,
-  onDeleteConfirm,
+  onDeleteClick,
 }: EmployeesListProps) {
   const jobsMap = useJobsMap();
   const { classes } = useStyles();
@@ -73,51 +72,30 @@ export function EmployeesList({
         accessor: "id",
         id: "actions",
         Cell: ({ cell }) => {
-          const [showConfirm, setShowConfirm] = useState(false);
-
+          const e = cell.row.original;
           return (
             <div className={classes.actions}>
-              <Button
-                variant="subtle"
-                onClick={() => onEditClick(cell.row.original)}
-              >
+              <Button variant="subtle" onClick={() => onEditClick(e)}>
                 Edit
               </Button>
 
-              {showConfirm ? (
-                <Modal
-                  opened={showConfirm}
-                  onClose={() => setShowConfirm(false)}
-                  withCloseButton={false}
-                  primaryButton={{
-                    label: "Yes, delete",
-                    color: "red",
-                    onClick: () => onDeleteConfirm(cell.row.original),
-                  }}
-                >
-                  <p>
-                    Are you sure you want to delete the record for
-                    <span>{cell.row.original.name}</span>?
-                  </p>
-                </Modal>
-              ) : (
-                <Button
-                  color="red"
-                  variant="subtle"
-                  onClick={(event: React.MouseEvent) => {
-                    setShowConfirm(true);
-                    event.stopPropagation();
-                  }}
-                >
-                  Delete
-                </Button>
-              )}
+              <Button
+                color="red"
+                variant="subtle"
+                onClick={(event: React.MouseEvent) => {
+                  onDeleteClick(e);
+                  // Triggers the click handler as if the row is clicked
+                  event.stopPropagation();
+                }}
+              >
+                Delete
+              </Button>
             </div>
           );
         },
       },
     ],
-    [jobsMap, onDeleteConfirm, onEditClick, classes]
+    [jobsMap, onDeleteClick, onEditClick, classes]
   );
 
   return data.length > 0 ? (

@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { ReactComponent as AddIcon } from "shared/icons/plus.svg";
-import { useDeleteEmployee } from "./employees.api";
 import { Employee } from "./employee.models";
 import { useEmployees } from "./employees.utils";
 import { EmployeesList } from "./view/EmployeesList";
@@ -8,13 +7,15 @@ import { SaveEmployeeForm } from "./save/SaveEmployeeForm";
 import { useStyles } from "./Employees.styles";
 import { Button } from "shared/components/button";
 import { Header } from "shared/components/header";
+import { ConfirmDeleteEmployee } from "./delete/ConfirmDeleteEmployee";
 
 export function Employees() {
+  const { classes } = useStyles();
   const employees = useEmployees();
-  const { mutate: deleteEmployee } = useDeleteEmployee();
   const [showSaveForm, setShowSaveForm] = useState(false);
   const [employeeToEdit, setEmployeeToEdit] = useState<Employee>();
-  const { classes } = useStyles();
+  const [showConfirmDelete, setShowConfirmDelete] = useState(false);
+  const [employeeToDelete, setEmployeeToDelete] = useState<Employee>();
 
   return (
     <>
@@ -37,18 +38,40 @@ export function Employees() {
 
       <EmployeesList
         employees={employees}
-        onDeleteConfirm={(e) => deleteEmployee(e.id)}
         onEditClick={(e) => {
           setShowSaveForm(true);
           setEmployeeToEdit(e);
+        }}
+        onDeleteClick={(e) => {
+          setShowConfirmDelete(true);
+          setEmployeeToDelete(e);
         }}
       />
 
       <SaveEmployeeForm
         employee={employeeToEdit}
         open={showSaveForm}
-        onSave={() => setShowSaveForm(false)}
-        onClose={() => setShowSaveForm(false)}
+        onSave={() => {
+          setShowSaveForm(false);
+          setEmployeeToEdit(undefined);
+        }}
+        onClose={() => {
+          setShowSaveForm(false);
+          setEmployeeToEdit(undefined);
+        }}
+      />
+
+      <ConfirmDeleteEmployee
+        employee={employeeToDelete}
+        open={showConfirmDelete}
+        onDelete={() => {
+          setShowConfirmDelete(false);
+          setEmployeeToDelete(undefined);
+        }}
+        onClose={() => {
+          setShowConfirmDelete(false);
+          setEmployeeToDelete(undefined);
+        }}
       />
     </>
   );
