@@ -48,7 +48,9 @@ export function SaveEmployeeForm({
       onSuccess() {
         toast.success({
           title: "Success!",
-          message: "New employee record created",
+          message: employee
+            ? "Employee record updated"
+            : "New employee record created",
         });
         onSave();
       },
