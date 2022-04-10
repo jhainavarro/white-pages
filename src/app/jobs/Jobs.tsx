@@ -20,7 +20,6 @@ export function Jobs() {
       <div className={classes.header}>
         <Header className={classes.tableHeader}>Jobs</Header>
         <Button
-          className={classes.addButton}
           leftIcon={<AddIcon className={classes.addIcon} />}
           size="lg"
           variant="gradient"

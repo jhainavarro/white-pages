@@ -7,7 +7,6 @@ export const useStyles = createStyles((theme) => ({
     alignItems: "center",
     marginBlock: theme.spacing.xl,
   },
-  addButton: {},
   tableHeader: {
     marginBottom: theme.spacing.lg,
   },
