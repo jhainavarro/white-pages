@@ -1,5 +1,7 @@
 import React from "react";
 import { Global, MantineProvider } from "@mantine/core";
+import ScrollBar from "react-perfect-scrollbar";
+import "react-perfect-scrollbar/dist/css/styles.css";
 import "@fontsource/mulish/400.css";
 import "@fontsource/mulish/600.css";
 import "@fontsource/mulish/800.css";
@@ -54,7 +56,7 @@ export function StylesProvider({ children }: StylesProviderProps) {
           },
         })}
       />
-      {children}
+      <ScrollBar style={{ height: "100vh" }}>{children}</ScrollBar>
     </MantineProvider>
   );
 }
