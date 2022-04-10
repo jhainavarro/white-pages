@@ -17,6 +17,7 @@ import { MultiSelect } from "shared/components/multi-select";
 import { Checkbox } from "shared/components/checkbox";
 import { Avatar } from "shared/components/avatar";
 import { IconButton } from "shared/components/button";
+import { toast } from "shared/components/toast";
 import { ReactComponent as RefreshIcon } from "shared/icons/refresh.svg";
 
 interface SaveEmployeeFormProps {
@@ -45,7 +46,10 @@ export function SaveEmployeeForm({
 
     saveEmployee(employeeToSave, {
       onSuccess() {
-        // TODO: success alert
+        toast.success({
+          title: "Success!",
+          message: "New employee record created",
+        });
         onSave();
       },
       onError() {
@@ -55,16 +59,15 @@ export function SaveEmployeeForm({
   }
 
   useEffect(() => {
-    form.reset();
+    if (open) {
+      form.reset();
+    }
 
     /**
-     * This modal might already be rendered in the DOM, so we want to reset
-     * the form values when the employee prop changes. This happens when a
-     * different employee is clicked (for editing) or when the +Add button
-     * is clicked.
+     * Form reset updates the local state and triggers infinite re-rendering
      */
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [employee]);
+  }, [open]);
 
   return (
     <Modal
