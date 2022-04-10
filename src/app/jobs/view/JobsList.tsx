@@ -3,6 +3,7 @@ import { Column } from "react-table";
 import { Button } from "shared/components/button";
 import { Table } from "shared/components/table";
 import { Job } from "../job.models";
+import { JobBadge } from "./JobBadge";
 import { useStyles } from "./JobsList.styles";
 
 interface JobsListProps {
@@ -19,6 +20,7 @@ export function JobsList({ jobs, onEditClick, onDeleteClick }: JobsListProps) {
       {
         Header: "Name",
         accessor: "name",
+        Cell: ({ cell }) => <JobBadge job={cell.row.original} size="md" />,
       },
       {
         Header: "# of Employees",
