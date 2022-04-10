@@ -4,13 +4,13 @@ import { Header } from "shared/components/header";
 import { ReactComponent as AddIcon } from "shared/icons/plus.svg";
 import { ConfirmDeleteJob } from "./delete/ConfirmDeleteJob";
 import { Job } from "./job.models";
-import { useGetJobs } from "./jobs.api";
 import { useStyles } from "./Jobs.styles";
+import { useJobs } from "./jobs.utils";
 import { SaveJobForm } from "./save/SaveJobForm";
 import { JobsList } from "./view/JobsList";
 
 export function Jobs() {
-  const { data: jobs = [] } = useGetJobs();
+  const jobs = useJobs();
   const { classes } = useStyles();
   const [showSaveForm, setShowSaveForm] = useState(false);
   const [jobToEdit, setJobToEdit] = useState<Job>();
