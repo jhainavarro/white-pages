@@ -42,13 +42,12 @@ export function Jobs() {
         }}
       />
 
-      {showSaveForm && (
-        <SaveJobForm
-          job={jobToEdit}
-          onSave={() => setShowSaveForm(false)}
-          onClose={() => setShowSaveForm(false)}
-        />
-      )}
+      <SaveJobForm
+        job={jobToEdit}
+        open={showSaveForm}
+        onSave={() => setShowSaveForm(false)}
+        onClose={() => setShowSaveForm(false)}
+      />
     </>
   );
 }

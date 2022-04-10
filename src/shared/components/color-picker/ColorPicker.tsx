@@ -1,19 +1,22 @@
 import React, { useState } from "react";
 import { ColorSwatch, useMantineTheme } from "@mantine/core";
 import { ReactComponent as CheckIcon } from "shared/icons/check.svg";
+import { useStyles } from "./ColorPicker.styles";
 
 interface ColorPickerProps {
+  className?: string;
   value?: string;
-  onSelect: (c: string) => void;
+  onChange: (c: string) => void;
 }
 
-export function ColorPicker({ value, onSelect }: ColorPickerProps) {
+export function ColorPicker({ className, value, onChange }: ColorPickerProps) {
   const theme = useMantineTheme();
+  const { classes, cx } = useStyles();
   const colors = Object.keys(theme.colors);
   const [selected, setSelected] = useState(value);
 
   return (
-    <div style={{ display: "flex", gap: "4px" }}>
+    <div className={cx(className, classes.group)}>
       {colors.map((color) => (
         <ColorSwatch
           key={color}
@@ -21,7 +24,7 @@ export function ColorPicker({ value, onSelect }: ColorPickerProps) {
           style={{ cursor: "pointer" }}
           title={color}
           onClick={() => {
-            onSelect(color);
+            onChange(color);
             setSelected(color);
           }}
         >

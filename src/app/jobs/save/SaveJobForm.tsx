@@ -1,84 +1,86 @@
-import React from "react";
-import { useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import React, { useEffect } from "react";
+import { useForm, zodResolver } from "@mantine/form";
 import { ColorPicker } from "shared/components/color-picker";
+import { toast } from "shared/components/toast";
 import { Job } from "../job.models";
 import { useSaveJob } from "../jobs.api";
-import { getDefaultValues, Inputs, isDupeName } from "./SaveJobForm.helpers";
+import { getDefaultValues, Inputs, schema } from "./SaveJobForm.helpers";
+import { Modal } from "shared/components/modal";
+import { useStyles } from "./SaveJobForm.styles";
+import { TextField } from "shared/components/text-field";
 
 interface SaveJobFormProps {
   job?: Job;
+  open: boolean;
   onSave: () => void;
   onClose: () => void;
 }
 
-export function SaveJobForm({ job, onSave, onClose }: SaveJobFormProps) {
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-    setValue,
-    watch,
-  } = useForm<Inputs>({
-    defaultValues: getDefaultValues(job),
-  });
+export function SaveJobForm({ job, open, onSave, onClose }: SaveJobFormProps) {
+  const { classes } = useStyles();
   const { mutate: saveJob } = useSaveJob();
+  const form = useForm<Inputs>({
+    schema: zodResolver(schema),
+    initialValues: getDefaultValues(job),
+  });
 
-  const [result, setResult] = useState("");
-
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
+  function handleSubmit(data: Inputs) {
     const jobToSave = job ? { ...job, ...data } : data;
 
     saveJob(jobToSave, {
       onSuccess() {
-        setResult("Successfully saved job details!");
+        toast.success({
+          title: "Success!",
+          message: job ? "Job updated" : "New job created",
+        });
         onSave();
       },
       onError(e) {
-        setResult(e.message);
+        // TODO: error alert
       },
     });
-  };
+  }
+
+  useEffect(() => {
+    if (open) {
+      form.reset();
+    }
+
+    /**
+     * Form reset updates the local state and triggers infinite re-rendering
+     */
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <div>
-        <label htmlFor="name">Name:</label>
-        <input
-          id="name"
-          {...register("name", {
-            required: { value: true, message: "Please enter a job name" },
-            validate: (v) =>
-              !isDupeName(v, job?.id) ||
-              "There is already a job with that name",
-          })}
-          placeholder="Sales Representative"
+    <Modal
+      opened={open}
+      title={job ? "Edit job" : "Add a new job"}
+      onClose={() => {
+        form.reset();
+        onClose();
+      }}
+      primaryButton={{
+        label: "Save",
+        type: "submit",
+        onClick: form.onSubmit(handleSubmit),
+      }}
+    >
+      <form onSubmit={form.onSubmit(handleSubmit)}>
+        <TextField
+          {...form.getInputProps("name")}
+          label="Name"
+          placeholder="Customer Support"
           autoComplete="off"
-          autoFocus
+          data-autofocus
+          required
         />
-        {errors.name && <span>{errors.name.message}</span>}
-      </div>
 
-      <div style={{ marginBlock: "12px" }}>
         <ColorPicker
-          {...register("color")}
-          value={watch("color")}
-          onSelect={(c) => setValue("color", c)}
+          {...form.getInputProps("color")}
+          className={classes.colorPicker}
         />
-      </div>
-
-      <div>
-        <button type="submit">Save</button>
-        <button type="button" onClick={() => reset()}>
-          Reset
-        </button>
-        <button type="button" onClick={() => onClose()}>
-          Cancel
-        </button>
-
-        <p>{result}</p>
-      </div>
-    </form>
+      </form>
+    </Modal>
   );
 }
