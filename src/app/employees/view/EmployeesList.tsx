@@ -1,8 +1,12 @@
 import React, { useMemo, useState } from "react";
 import { Column } from "react-table";
-import { useJobsMap } from "app/jobs";
+import { JobBadge, useJobsMap } from "app/jobs";
+import { Button } from "shared/components/button";
 import { Table } from "shared/components/table";
 import { Employee } from "../employee.models";
+import { useStyles } from "./EmployeeList.styles";
+import { Modal } from "shared/components/modal";
+import { ReactComponent as CheckIcon } from "shared/icons/check.svg";
 
 interface EmployeesListProps {
   employees: Employee[];
@@ -16,9 +20,8 @@ export function EmployeesList({
   onDeleteConfirm,
 }: EmployeesListProps) {
   const jobsMap = useJobsMap();
-
+  const { classes } = useStyles();
   const data: Employee[] = useMemo(() => employees, [employees]);
-
   const columns: Column<Employee>[] = useMemo(
     () => [
       {
@@ -27,15 +30,19 @@ export function EmployeesList({
         Cell: ({ cell }) => {
           const e = cell.row.original;
           return (
-            <>
-              <img src={e.avatarUrl} alt={`Avatar of ${e.name}`} />
-              <span>{e.name}</span>
-            </>
+            <div className={classes.nameCell} onClick={() => onEditClick(e)}>
+              <img
+                src={e.avatarUrl}
+                alt={`Avatar of ${e.name}`}
+                className={classes.avatar}
+              />
+              <span className={classes.name}>{e.name}</span>
+            </div>
           );
         },
       },
       {
-        Header: "Date hired",
+        Header: "Date Hired",
         accessor: "hireDate",
       },
       {
@@ -43,26 +50,34 @@ export function EmployeesList({
         accessor: "id",
         id: "jobs",
         Cell: ({ cell }) => (
-          <ul>
-            {cell.row.original.jobIds.map((jobId) => (
-              <li key={jobId}>{jobsMap.get(jobId)?.name}</li>
-            ))}
-          </ul>
+          <div
+            className={classes.jobCell}
+            onClick={() => onEditClick(cell.row.original)}
+          >
+            {cell.row.original.jobIds.map((jobId) => {
+              const job = jobsMap.get(jobId);
+              return job ? <JobBadge key={job.id} job={job} /> : <></>;
+            })}
+          </div>
         ),
       },
       {
         Header: "Featured",
         accessor: "isFeatured",
-        Cell: ({ value }) => (value ? "Yes" : "No"),
+        Cell: ({ value }) =>
+          value ? <CheckIcon className={classes.isFeaturedIcon} /> : <></>,
       },
       {
         Header: " ",
         accessor: "id",
         id: "edit",
         Cell: ({ cell }) => (
-          <button type="button" onClick={() => onEditClick(cell.row.original)}>
+          <Button
+            variant="subtle"
+            onClick={() => onEditClick(cell.row.original)}
+          >
             Edit
-          </button>
+          </Button>
         ),
       },
       {
@@ -73,31 +88,47 @@ export function EmployeesList({
           const [showConfirm, setShowConfirm] = useState(false);
 
           return showConfirm ? (
-            <div>
-              Are you sure you want to delete this record?
-              <button
-                type="button"
-                onClick={() => {
-                  setShowConfirm(false);
-                  onDeleteConfirm(cell.row.original);
-                }}
-              >
-                Yes, delete it
-              </button>
-              <button type="button" onClick={() => setShowConfirm(false)}>
-                Cancel
-              </button>
-            </div>
+            <Modal
+              opened={showConfirm}
+              onClose={() => setShowConfirm(false)}
+              withCloseButton={false}
+              primaryButton={{
+                children: "Yes, delete",
+                color: "red",
+                onClick: () => onDeleteConfirm(cell.row.original),
+              }}
+            >
+              <p>
+                Are you sure you want to delete the record for
+                <span>{cell.row.original.name}</span>?
+              </p>
+            </Modal>
           ) : (
-            <button type="button" onClick={() => setShowConfirm(true)}>
+            <Button
+              color="red"
+              variant="subtle"
+              onClick={(event: React.MouseEvent) => {
+                setShowConfirm(true);
+                event.stopPropagation();
+              }}
+            >
               Delete
-            </button>
+            </Button>
           );
         },
       },
     ],
-    [jobsMap, onDeleteConfirm, onEditClick]
+    [jobsMap, onDeleteConfirm, onEditClick, classes]
   );
 
-  return <Table columns={columns} data={data} />;
+  return data.length > 0 ? (
+    <Table
+      columns={columns}
+      data={data}
+      getRowProps={() => ({ className: classes.row })}
+      onRowClick={(e) => onEditClick(e)}
+    />
+  ) : (
+    <p className={classes.emptyText}>No employee records yet</p>
+  );
 }

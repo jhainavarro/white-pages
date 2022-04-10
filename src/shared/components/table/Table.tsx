@@ -1,33 +1,33 @@
 import React from "react";
-import { Column, Row, useTable } from "react-table";
-import "./Table.css";
+import { Column, Row, TableRowProps, useTable } from "react-table";
+import { Table as MTable } from "@mantine/core";
 
 interface TableProps<D extends object> {
   columns: Column<D>[];
   data: D[];
 
   // For customizing the table props. Add more as needed (eg, for columns, headers, etc)
-  getRowProps?: (row: Row<D>) => object;
+  getRowProps?: (row: Row<D>) => Omit<TableRowProps, "key">;
+  onRowClick?: (data: D) => void;
 }
 
 export function Table<D extends object>({
   columns,
   data,
   getRowProps,
+  onRowClick,
 }: TableProps<D>) {
   const tableInstance = useTable({ columns, data });
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     tableInstance;
 
   return (
-    <table {...getTableProps()} className="Table">
+    <MTable {...getTableProps()} highlightOnHover fontSize="md">
       <thead>
         {headerGroups.map((headerGroup) => (
           <tr {...headerGroup.getHeaderGroupProps()}>
             {headerGroup.headers.map((column) => (
-              <th {...column.getHeaderProps()} className="Table-header">
-                {column.render("Header")}
-              </th>
+              <th {...column.getHeaderProps()}>{column.render("Header")}</th>
             ))}
           </tr>
         ))}
@@ -38,18 +38,18 @@ export function Table<D extends object>({
           prepareRow(row);
 
           return (
-            <tr {...row.getRowProps()} {...getRowProps?.(row)}>
+            <tr
+              {...row.getRowProps()}
+              {...getRowProps?.(row)}
+              onClick={() => onRowClick?.(row.original)}
+            >
               {row.cells.map((cell) => {
-                return (
-                  <td {...cell.getCellProps()} className="Table-cell">
-                    {cell.render("Cell")}
-                  </td>
-                );
+                return <td {...cell.getCellProps()}>{cell.render("Cell")}</td>;
               })}
             </tr>
           );
         })}
       </tbody>
-    </table>
+    </MTable>
   );
 }

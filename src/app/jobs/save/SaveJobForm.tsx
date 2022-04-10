@@ -1,6 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { ColorPicker } from "shared/components/color-picker";
 import { Job } from "../job.models";
 import { useSaveJob } from "../jobs.api";
 import { getDefaultValues, Inputs, isDupeName } from "./SaveJobForm.helpers";
@@ -17,6 +18,8 @@ export function SaveJobForm({ job, onSave, onClose }: SaveJobFormProps) {
     handleSubmit,
     reset,
     formState: { errors },
+    setValue,
+    watch,
   } = useForm<Inputs>({
     defaultValues: getDefaultValues(job),
   });
@@ -47,13 +50,22 @@ export function SaveJobForm({ job, onSave, onClose }: SaveJobFormProps) {
           {...register("name", {
             required: { value: true, message: "Please enter a job name" },
             validate: (v) =>
-              !isDupeName(v) || "There is already a job with that name",
+              !isDupeName(v, job?.id) ||
+              "There is already a job with that name",
           })}
           placeholder="Sales Representative"
           autoComplete="off"
           autoFocus
         />
         {errors.name && <span>{errors.name.message}</span>}
+      </div>
+
+      <div style={{ marginBlock: "12px" }}>
+        <ColorPicker
+          {...register("color")}
+          value={watch("color")}
+          onSelect={(c) => setValue("color", c)}
+        />
       </div>
 
       <div>
