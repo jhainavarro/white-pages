@@ -7,6 +7,7 @@ import { EmployeesList } from "./view/EmployeesList";
 import { SaveEmployeeForm } from "./save/SaveEmployeeForm";
 import { useStyles } from "./Employees.styles";
 import { Button } from "shared/components/button";
+import { Header } from "shared/components/header";
 
 export function Employees() {
   const employees = useEmployees();
@@ -17,19 +18,22 @@ export function Employees() {
 
   return (
     <>
-      <Button
-        className={classes.addButton}
-        leftIcon={<AddIcon className={classes.addIcon} />}
-        size="lg"
-        variant="gradient"
-        gradient={{ from: "cyan", to: "indigo" }}
-        onClick={() => {
-          setShowSaveForm(true);
-          setEmployeeToEdit(undefined);
-        }}
-      >
-        Add
-      </Button>
+      <div className={classes.header}>
+        <Header className={classes.tableHeader}>Employees</Header>
+        <Button
+          className={classes.addButton}
+          leftIcon={<AddIcon className={classes.addIcon} />}
+          size="lg"
+          variant="gradient"
+          gradient={{ from: "cyan", to: "indigo" }}
+          onClick={() => {
+            setShowSaveForm(true);
+            setEmployeeToEdit(undefined);
+          }}
+        >
+          Add
+        </Button>
+      </div>
 
       <EmployeesList
         employees={employees}

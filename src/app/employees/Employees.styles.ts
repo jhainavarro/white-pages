@@ -1,10 +1,15 @@
 import { createStyles } from "@mantine/core";
 
 export const useStyles = createStyles((theme) => ({
-  addButton: {
-    display: "block",
-    marginLeft: "auto",
-    marginRight: 32,
+  header: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBlock: theme.spacing.xl,
+  },
+  addButton: {},
+  tableHeader: {
+    marginBottom: theme.spacing.lg,
   },
   addIcon: {
     height: 24,

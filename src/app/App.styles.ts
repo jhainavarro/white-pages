@@ -5,8 +5,8 @@ export const useStyles = createStyles((theme) => ({
     width: "100%",
     display: "flex",
     justifyContent: "space-between",
-    paddingBlock: 16,
-    paddingInline: 48,
+    paddingBlock: theme.spacing.xs,
+    paddingInline: theme.spacing.xl,
     background: theme.fn.linearGradient(
       133,
       theme.colors.green[4],
@@ -20,7 +20,6 @@ export const useStyles = createStyles((theme) => ({
   },
   navName: {
     fontSize: 32,
-    marginRight: theme.spacing.sm,
   },
   navLink: {
     position: "relative",
@@ -52,6 +51,7 @@ export const useStyles = createStyles((theme) => ({
     },
   },
   content: {
-    padding: theme.spacing.lg,
+    paddingBlock: theme.spacing.lg,
+    paddingInline: 32,
   },
 }));
