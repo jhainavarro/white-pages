@@ -1,16 +1,23 @@
-import React, { useState, useEffect } from "react";
-import { useForm, SubmitHandler } from "react-hook-form";
-import { useGetJobs } from "app/jobs/jobs.api";
+import React, { useEffect } from "react";
+import { useForm, zodResolver } from "@mantine/form";
 import { Modal } from "shared/components/modal";
-import { Button } from "shared/components/button";
 import { Employee } from "../employee.models";
 import { useSaveEmployee } from "../employees.api";
 import {
   getAvatar,
   getDefaultValues,
   Inputs,
+  schema,
+  useJobsOptions,
 } from "./SaveEmployeeForm.helpers";
 import { useStyles } from "./SaveEmployerForm.styles";
+import { TextField } from "shared/components/text-field/TextField";
+import { DatePicker } from "shared/components/date-picker";
+import { MultiSelect } from "shared/components/multi-select";
+import { Checkbox } from "shared/components/checkbox";
+import { Avatar } from "shared/components/avatar";
+import { IconButton } from "shared/components/button";
+import { ReactComponent as RefreshIcon } from "shared/icons/refresh.svg";
 
 interface SaveEmployeeFormProps {
   employee?: Employee;
@@ -25,113 +32,102 @@ export function SaveEmployeeForm({
   onSave,
   onClose,
 }: SaveEmployeeFormProps) {
-  const modalTitle = employee
-    ? "Edit employee record"
-    : "Add a new employee record";
-  const { classes } = useStyles();
-  const {
-    register,
-    handleSubmit,
-    watch,
-    setValue,
-    reset,
-    formState: { errors },
-  } = useForm<Inputs>({
-    defaultValues: getDefaultValues(employee),
-  });
+  const { classes, cx } = useStyles();
+  const jobOptions = useJobsOptions();
   const { mutate: saveEmployee } = useSaveEmployee();
-  const { data: jobs = [] } = useGetJobs();
+  const form = useForm<Inputs>({
+    schema: zodResolver(schema),
+    initialValues: getDefaultValues(employee),
+  });
 
-  const [result, setResult] = useState("");
-
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
+  function handleSubmit(data: Inputs) {
     const employeeToSave = employee ? { ...data, id: employee.id } : data;
 
     saveEmployee(employeeToSave, {
       onSuccess() {
-        setResult("Successfully saved employee details!");
+        // TODO: success alert
         onSave();
       },
       onError() {
-        setResult("Unable to save details. Please try again.");
+        // TODO: error alert
       },
     });
-  };
+  }
 
   useEffect(() => {
-    reset(getDefaultValues(employee));
-  }, [employee, reset]);
+    form.reset();
+
+    /**
+     * This modal might already be rendered in the DOM, so we want to reset
+     * the form values when the employee prop changes. This happens when a
+     * different employee is clicked (for editing) or when the +Add button
+     * is clicked.
+     */
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [employee]);
 
   return (
-    <Modal opened={open} onClose={onClose} title={modalTitle}>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        {/* AVATAR */}
-        <div>
-          <img
-            src={watch("avatarUrl")}
-            alt="Employee avatar"
-            className={classes.avatar}
+    <Modal
+      opened={open}
+      title={employee ? "Edit employee record" : "Add a new employee record"}
+      onClose={() => {
+        form.reset();
+        onClose();
+      }}
+      primaryButton={{
+        label: "Save",
+        type: "submit",
+        onClick: form.onSubmit(handleSubmit),
+      }}
+    >
+      <form onSubmit={form.onSubmit(handleSubmit)}>
+        <div className={classes.avatarPicker}>
+          <Avatar src={form.values.avatarUrl} size={150} />
+          <IconButton
+            classNames={{ root: classes.refreshButton }}
+            icon={<RefreshIcon className={classes.refreshIcon} />}
+            compact
+            color="violet"
+            radius="lg"
+            variant="light"
+            onClick={() => form.setFieldValue("avatarUrl", getAvatar())}
           />
-          <Button onClick={() => setValue("avatarUrl", getAvatar())}>
-            Refresh
-          </Button>
         </div>
 
-        {/* NAME */}
-        <div>
-          <label htmlFor="name">Name:</label>
-          <input
-            id="name"
-            data-autofocus
-            {...register("name", { required: true })}
-            placeholder="Jane Santos"
-            autoComplete="off"
-          />
-          {errors.name && <span>Please enter the employee's full name</span>}
-        </div>
+        <TextField
+          {...form.getInputProps("name")}
+          className={classes.formField}
+          label="Name"
+          placeholder="Jane Santos"
+          autoComplete="off"
+          data-autofocus
+          required
+        />
 
-        {/* HIRE DATE */}
-        <div>
-          <label htmlFor="hire-date">Date hired:</label>
-          {/* https://caniuse.com/mdn-html_elements_input_input-date */}
-          <input
-            id="hire-date"
-            type="date"
-            {...register("hireDate", { required: true })}
-          />
-          {errors.hireDate && (
-            <span>Please select the date when the employee was hired</span>
-          )}
-        </div>
+        <DatePicker
+          {...form.getInputProps("hireDate")}
+          className={classes.formField}
+          label="Date hired"
+          placeholder="Select a date"
+          required
+        />
 
-        {/* JOBS */}
-        <div>
-          <label htmlFor="jobs">Jobs:</label>
-          <select id="jobs" {...register("jobIds")} multiple>
-            {jobs.map((j) => (
-              <option key={j.id} value={j.id}>
-                {j.name}
-              </option>
-            ))}
-          </select>
-        </div>
+        {/* TODO: Create new jobs from here for better UX */}
+        <MultiSelect
+          {...form.getInputProps("jobIds")}
+          className={classes.formField}
+          data={jobOptions}
+          label="Jobs"
+          placeholder="Choose one or more jobs"
+          nothingFound="No jobs with that name"
+          searchable
+        />
 
-        {/* IS FEATURED? */}
-        <div>
-          <label>
-            <input type="checkbox" {...register("isFeatured")} />
-            Feature employee on the homepage
-          </label>
-        </div>
-
-        {/* ACTIONS */}
-        <div>
-          <Button type="submit">Save</Button>
-          <Button onClick={() => reset()}>Reset</Button>
-          <Button onClick={() => onClose()}>Cancel</Button>
-
-          <p>{result}</p>
-        </div>
+        <Checkbox
+          {...form.getInputProps("isFeatured")}
+          className={cx(classes.formField, classes.isFeaturedCheckbox)}
+          label="Feature employee on the homepage"
+        />
       </form>
     </Modal>
   );

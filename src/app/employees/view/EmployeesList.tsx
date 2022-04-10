@@ -44,6 +44,7 @@ export function EmployeesList({
       {
         Header: "Date Hired",
         accessor: "hireDate",
+        Cell: ({ cell }) => cell.row.original.hireDate.toLocaleDateString(),
       },
       {
         Header: "Jobs",
@@ -93,7 +94,7 @@ export function EmployeesList({
               onClose={() => setShowConfirm(false)}
               withCloseButton={false}
               primaryButton={{
-                children: "Yes, delete",
+                label: "Yes, delete",
                 color: "red",
                 onClick: () => onDeleteConfirm(cell.row.original),
               }}

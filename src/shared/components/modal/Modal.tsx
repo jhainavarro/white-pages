@@ -4,7 +4,7 @@ import { Button, ButtonProps } from "shared/components/button";
 import { useStyles } from "./Modal.styles";
 
 type ModalProps = MModalProps & {
-  primaryButton?: ButtonProps;
+  primaryButton?: ButtonProps & { label?: string };
 };
 
 export function Modal({ children, primaryButton, ...props }: ModalProps) {
@@ -27,7 +27,12 @@ export function Modal({ children, primaryButton, ...props }: ModalProps) {
           </Button>
         )}
 
-        {primaryButton && <Button {...primaryButton} />}
+        {primaryButton && (
+          <Button
+            {...primaryButton}
+            children={primaryButton.label ?? primaryButton.children}
+          />
+        )}
       </div>
     </MModal>
   );

@@ -14,9 +14,7 @@ export function useEmployees(filter?: UseEmployeesFilter) {
     data = data.filter((e) => filter(e));
   }
 
-  data = data.sort(
-    (a, b) => new Date(a.hireDate).getTime() - new Date(b.hireDate).getTime()
-  );
+  data = data.sort((a, b) => a.hireDate.getTime() - b.hireDate.getTime());
 
   return data;
 }

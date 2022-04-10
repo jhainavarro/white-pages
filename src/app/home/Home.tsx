@@ -32,6 +32,7 @@ export function Home() {
     {
       Header: "Date hired",
       accessor: "hireDate",
+      Cell: ({ cell }) => cell.row.original.hireDate.toLocaleDateString(),
     },
     {
       Header: "Jobs",

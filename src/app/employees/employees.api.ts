@@ -13,10 +13,16 @@ const EMPLOYEES_KEY = "employees";
  * @returns The list of employee records stored
  */
 function getEmployees() {
-  const list = window.localStorage.getItem(EMPLOYEES_KEY);
+  const stored = JSON.parse(
+    window.localStorage.getItem(EMPLOYEES_KEY) ?? "[]"
+  ) as Employee[];
 
-  // Assumes that the format of saved details is correct
-  return list ? (JSON.parse(list) as Employee[]) : [];
+  // Transform / clean up stored data to be a proper `Employee` object
+  // eg, `hireDate` to proper Date
+  // Consider extracting to own function and define explicit DTO and entity types
+  const list = stored.map((e) => ({ ...e, hireDate: new Date(e.hireDate) }));
+
+  return list;
 }
 
 export function useGetEmployees() {
