@@ -1,4 +1,3 @@
-import React from "react";
 import { Avatar, Modal } from "shared/components";
 import { Employee } from "../employee.models";
 import { useDeleteEmployee } from "../employees.api";

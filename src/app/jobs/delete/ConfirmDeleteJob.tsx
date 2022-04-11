@@ -1,4 +1,3 @@
-import React from "react";
 import { Modal } from "shared/components";
 import { ReactComponent as TrashIcon } from "shared/icons/trash-colored.svg";
 import { Job } from "../job.models";

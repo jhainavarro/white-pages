@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useForm, zodResolver } from "@mantine/form";
 import { ColorPicker, Modal, TextField, toast } from "shared/components";
 import { Job } from "../job.models";

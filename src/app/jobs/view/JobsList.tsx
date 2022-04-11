@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import { MouseEvent, useMemo } from "react";
 import { Column } from "react-table";
 import { Button, Table } from "shared/components";
 import { Job } from "../job.models";
@@ -47,7 +47,7 @@ export function JobsList({ jobs, onEditClick, onDeleteClick }: JobsListProps) {
               <Button
                 color="red"
                 variant="subtle"
-                onClick={(event: React.MouseEvent) => {
+                onClick={(event: MouseEvent) => {
                   onDeleteClick(j);
                   // Triggers the click handler as if the row is clicked
                   event.stopPropagation();

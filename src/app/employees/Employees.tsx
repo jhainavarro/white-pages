@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Button, Header } from "shared/components";
 import { ReactComponent as AddIcon } from "shared/icons/plus.svg";
 import { EmployeesList } from "./view/EmployeesList";

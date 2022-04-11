@@ -1,4 +1,4 @@
-import React from "react";
+import { ReactNode } from "react";
 import { Global, MantineProvider } from "@mantine/core";
 import ScrollBar from "react-perfect-scrollbar";
 import "react-perfect-scrollbar/dist/css/styles.css";
@@ -9,7 +9,7 @@ import "@fontsource/arvo/400.css";
 import "@fontsource/arvo/700.css";
 
 interface StylesProviderProps {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 export function StylesProvider({ children }: StylesProviderProps) {
