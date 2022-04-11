@@ -23,7 +23,7 @@ export function Table<D extends object>({
     tableInstance;
 
   return (
-    <MTable {...props} {...getTableProps()} highlightOnHover fontSize="md">
+    <MTable highlightOnHover fontSize="md" {...props} {...getTableProps()}>
       <thead>
         {headerGroups.map((headerGroup) => (
           <tr {...headerGroup.getHeaderGroupProps()}>

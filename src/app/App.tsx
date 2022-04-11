@@ -14,23 +14,25 @@ export function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ToastProvider>
-        <div className={classes.topbar}>
-          <Header className={classes.navName}>White Pages</Header>
-          <nav className={classes.nav}>
-            <NavLink className={classes.navLink} to="/">
-              Home
-            </NavLink>
-            <NavLink className={classes.navLink} to="/manage/employees">
-              Employees
-            </NavLink>
-            <NavLink className={classes.navLink} to="/manage/jobs">
-              Jobs
-            </NavLink>
-          </nav>
-        </div>
+        <div className={classes.container}>
+          <div className={classes.topbar}>
+            <Header className={classes.navName}>White Pages</Header>
+            <nav className={classes.nav}>
+              <NavLink className={classes.navLink} to="/">
+                Home
+              </NavLink>
+              <NavLink className={classes.navLink} to="/manage/employees">
+                Employees
+              </NavLink>
+              <NavLink className={classes.navLink} to="/manage/jobs">
+                Jobs
+              </NavLink>
+            </nav>
+          </div>
 
-        <div className={classes.content}>
-          <Routing />
+          <div className={classes.content}>
+            <Routing />
+          </div>
         </div>
 
         <ReactQueryDevtools />

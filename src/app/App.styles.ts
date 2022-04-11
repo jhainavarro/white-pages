@@ -1,6 +1,11 @@
 import { createStyles } from "@mantine/core";
 
 export const useStyles = createStyles((theme) => ({
+  container: {
+    height: "100vh",
+    display: "flex",
+    flexDirection: "column",
+  },
   topbar: {
     width: "100%",
     display: "flex",
@@ -51,6 +56,7 @@ export const useStyles = createStyles((theme) => ({
     },
   },
   content: {
+    flexGrow: 1,
     paddingBlock: theme.spacing.lg,
     paddingInline: 32,
   },
