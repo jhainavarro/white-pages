@@ -11,6 +11,13 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
   (props, ref) => {
     const { classes } = useStyles();
 
-    return <MCheckbox {...props} ref={ref} classNames={classes} />;
+    return (
+      <MCheckbox
+        {...props}
+        checked={Boolean(props.value)}
+        ref={ref}
+        classNames={classes}
+      />
+    );
   }
 );
