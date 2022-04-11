@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { Button } from "shared/components/button";
-import { Header } from "shared/components/header";
+import { Button, Header } from "shared/components";
 import { ReactComponent as AddIcon } from "shared/icons/plus.svg";
 import { ConfirmDeleteJob } from "./delete/ConfirmDeleteJob";
 import { Job } from "./job.models";

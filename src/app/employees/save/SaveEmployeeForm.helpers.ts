@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { Job, useGetJobs } from "app/jobs";
-import { SelectItem } from "shared/components/multi-select";
+import { SelectItem } from "shared/components";
 import { Employee } from "../employee.models";
 
 /**

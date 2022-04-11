@@ -1,5 +1,5 @@
 import { Employee } from "app/employees";
-import { BadgeProps } from "shared/components/badge";
+import { BadgeProps } from "shared/components";
 
 export interface Job {
   id: string;

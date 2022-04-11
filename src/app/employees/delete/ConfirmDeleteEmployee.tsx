@@ -1,6 +1,5 @@
 import React from "react";
-import { Avatar } from "shared/components/avatar";
-import { Modal } from "shared/components/modal";
+import { Avatar, Modal } from "shared/components";
 import { Employee } from "../employee.models";
 import { useDeleteEmployee } from "../employees.api";
 import { useStyles } from "./ConfirmDeleteEmployee.styles";

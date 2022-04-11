@@ -1,5 +1,5 @@
 import React from "react";
-import { Badge, BadgeProps } from "shared/components/badge";
+import { Badge, BadgeProps } from "shared/components";
 import { Job } from "../job.models";
 
 type JobBadgeProps = BadgeProps & {

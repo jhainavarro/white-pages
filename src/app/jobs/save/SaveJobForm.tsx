@@ -1,13 +1,10 @@
 import React, { useEffect } from "react";
 import { useForm, zodResolver } from "@mantine/form";
-import { ColorPicker } from "shared/components/color-picker";
-import { toast } from "shared/components/toast";
+import { ColorPicker, Modal, TextField, toast } from "shared/components";
 import { Job } from "../job.models";
 import { useSaveJob } from "../jobs.api";
 import { getDefaultValues, Inputs, schema } from "./SaveJobForm.helpers";
-import { Modal } from "shared/components/modal";
 import { useStyles } from "./SaveJobForm.styles";
-import { TextField } from "shared/components/text-field";
 
 interface SaveJobFormProps {
   job?: Job;

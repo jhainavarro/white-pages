@@ -1,7 +1,6 @@
 import React, { useMemo } from "react";
 import { Column } from "react-table";
-import { Button } from "shared/components/button";
-import { Table } from "shared/components/table";
+import { Button, Table } from "shared/components";
 import { Job } from "../job.models";
 import { JobBadge } from "./JobBadge";
 import { useStyles } from "./JobsList.styles";

@@ -2,8 +2,7 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
-import { ToastProvider } from "shared/components/toast";
-import { Header } from "shared/components/header";
+import { Header, ToastProvider } from "shared/components";
 import { Routing } from "./Routing";
 import { useStyles } from "./App.styles";
 

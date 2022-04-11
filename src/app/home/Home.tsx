@@ -1,14 +1,12 @@
 import "@splidejs/react-splide/css";
 import React, { useState, useMemo } from "react";
+import { Link } from "react-router-dom";
 import { Column } from "react-table";
 import { Employee, useEmployees } from "app/employees";
 import { JobBadge, useJobsMap } from "app/jobs";
-import { Table } from "shared/components/table";
-import { Carousel, CarouselItem } from "shared/components/carousel";
-import { Button } from "shared/components/button";
+import { Button, Carousel, CarouselItem, Table } from "shared/components";
 import EmptyImg from "shared/icons/people-illus-1.jpg";
 import { useStyles } from "./Home.styles";
-import { Link } from "react-router-dom";
 
 export function Home() {
   const { classes, cx } = useStyles();

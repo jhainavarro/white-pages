@@ -1,13 +1,12 @@
 import React, { useState } from "react";
+import { Button, Header } from "shared/components";
 import { ReactComponent as AddIcon } from "shared/icons/plus.svg";
-import { Employee } from "./employee.models";
-import { useEmployees } from "./employees.utils";
 import { EmployeesList } from "./view/EmployeesList";
 import { SaveEmployeeForm } from "./save/SaveEmployeeForm";
-import { useStyles } from "./Employees.styles";
-import { Button } from "shared/components/button";
-import { Header } from "shared/components/header";
 import { ConfirmDeleteEmployee } from "./delete/ConfirmDeleteEmployee";
+import { Employee } from "./employee.models";
+import { useEmployees } from "./employees.utils";
+import { useStyles } from "./Employees.styles";
 
 export function Employees() {
   const { classes } = useStyles();

@@ -1,8 +1,7 @@
 import React, { useMemo } from "react";
 import { Column } from "react-table";
 import { JobBadge, useJobsMap } from "app/jobs";
-import { Button } from "shared/components/button";
-import { Table } from "shared/components/table";
+import { Button, Table } from "shared/components";
 import { Employee } from "../employee.models";
 import { useStyles } from "./EmployeeList.styles";
 import { ReactComponent as CheckIcon } from "shared/icons/check.svg";

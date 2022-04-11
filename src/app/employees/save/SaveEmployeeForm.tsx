@@ -1,6 +1,16 @@
 import React, { useEffect } from "react";
 import { useForm, zodResolver } from "@mantine/form";
-import { Modal } from "shared/components/modal";
+import {
+  Avatar,
+  Checkbox,
+  DatePicker,
+  IconButton,
+  Modal,
+  MultiSelect,
+  TextField,
+  toast,
+} from "shared/components";
+import { ReactComponent as RefreshIcon } from "shared/icons/refresh.svg";
 import { Employee } from "../employee.models";
 import { useSaveEmployee } from "../employees.api";
 import {
@@ -11,14 +21,6 @@ import {
   useJobsOptions,
 } from "./SaveEmployeeForm.helpers";
 import { useStyles } from "./SaveEmployerForm.styles";
-import { TextField } from "shared/components/text-field/TextField";
-import { DatePicker } from "shared/components/date-picker";
-import { MultiSelect } from "shared/components/multi-select";
-import { Checkbox } from "shared/components/checkbox";
-import { Avatar } from "shared/components/avatar";
-import { IconButton } from "shared/components/button";
-import { toast } from "shared/components/toast";
-import { ReactComponent as RefreshIcon } from "shared/icons/refresh.svg";
 
 interface SaveEmployeeFormProps {
   employee?: Employee;
