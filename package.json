@@ -2,6 +2,14 @@
   "name": "white-pages",
   "version": "0.1.0",
   "private": true,
+  "scripts": {
+    "start": "react-scripts start",
+    "start:build": "npm run build && npm run serve:build",
+    "build": "react-scripts build",
+    "serve:build": "npx serve -p 5050 -s build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
   "dependencies": {
     "@fontsource/arvo": "^4.5.4",
     "@fontsource/mulish": "^4.5.7",
@@ -30,11 +38,8 @@
     "web-vitals": "^2.1.4",
     "zod": "^3.14.4"
   },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+  "devDependencies": {
+    "serve": "^13.0.2"
   },
   "eslintConfig": {
     "extends": [

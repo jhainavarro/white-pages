@@ -89,3 +89,12 @@ It correctly bundles React in production mode and optimizes the build for the be
 
 The build is minified and the filenames include the hashes.\
 Your app is ready to be deployed!
+
+### `npm run start:build`
+
+Builds the app for production to the `build` folder. \
+And serves it locally to [http://localhost:3000](http://localhost:3000).
+
+Does not watch for changes.
+
+Helpful for double checking how the app would behave when built.
